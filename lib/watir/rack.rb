@@ -3,21 +3,22 @@ require "net/http"
 require "rack"
 require "watir"
 
-require File.expand_path("hanami/browser.rb", File.dirname(__FILE__))
-require File.expand_path("hanami/middleware.rb", File.dirname(__FILE__))
+require File.expand_path("rack/browser.rb", File.dirname(__FILE__))
+require File.expand_path("rack/middleware.rb", File.dirname(__FILE__))
 
 module Watir
-  class Hanami
+  class Rack
     class << self
       private :new
+      attr_accessor :test_app
       attr_reader :port, :middleware
       attr_writer :server
       attr_writer :port
 
-      # Start the Hanami
+      # Start the Rack
       # Will be called automatically by {Watir::Browser#initialize}.
       #
-      # @param [Integer] port port for the Hanami
+      # @param [Integer] port port for the Rack
       def boot(port: nil)
         unless running?
           @middleware = Middleware.new(app)
@@ -30,24 +31,24 @@ module Watir
           Timeout.timeout(boot_timeout) { @server_thread.join(0.1) until running? }
         end
       rescue Timeout::Error
-        raise Timeout::Error, "Hanami Rack application timed out during boot"
+        raise Timeout::Error, "Rack Rack application timed out during boot"
       end
 
-      # Host for Hanami app under test. Default is {.local_host}.
+      # Host for Rack app under test. Default is {.local_host}.
       #
-      # @return [String] Host for Hanami app under test.
+      # @return [String] Host for Rack app under test.
       def host
         @host || local_host
       end
 
-      # Set host for Hanami app. Will be used by {Browser#goto} method.
+      # Set host for Rack app. Will be used by {Browser#goto} method.
       #
       # @param [String] host host to use when using {Browser#goto}.
       def host=(host)
         @host = host
       end
 
-      # Local host for Hanami app under test.
+      # Local host for Rack app under test.
       #
       # @return [String] Local host with the value of "127.0.0.1".
       def local_host
@@ -75,9 +76,9 @@ module Watir
         @middleware.error = value
       end
 
-      # Check if Hanami app under test is running.
+      # Check if Rack app under test is running.
       #
-      # @return [Boolean] true when Hanami app under test is running, false otherwise.
+      # @return [Boolean] true when Rack app under test is running, false otherwise.
       def running?
         return false if @server_thread && @server_thread.join(0)
 
@@ -90,13 +91,15 @@ module Watir
         return false
       end
 
-      # Hanami app under test.
+      # Rack app under test.
       #
-      # @return [Object] Hanami Rack app.
+      # @return [Object] Rack Rack app.
       def app
-        @app ||= Rack::Builder.new do
+        test_app = self.test_app
+
+        @app ||= ::Rack::Builder.new do
           map "/" do
-            run ::Hanami.app
+            run test_app
           end
         end.to_app
       end
@@ -119,18 +122,18 @@ module Watir
           begin
             require 'rack/handler/thin'
             Thin::Logging.silent = true
-            return Rack::Handler::Thin.run(app, :Port => port)
+            return ::Rack::Handler::Thin.run(app, :Port => port)
           rescue LoadError
           end
 
           begin
             require 'rack/handler/puma'
-            return Rack::Handler::Puma.run(app, :Port => port, :Silent => true)
+            return ::Rack::Handler::Puma.run(app, :Port => port, :Silent => true)
           rescue LoadError
           end
 
           require 'rack/handler/webrick'
-          Rack::Handler::WEBrick.run(app, :Port => port, :AccessLog => [], :Logger => WEBrick::Log::new(nil, 0))
+          ::Rack::Handler::WEBrick.run(app, :Port => port, :AccessLog => [], :Logger => WEBrick::Log::new(nil, 0))
         end
       end
 

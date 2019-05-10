@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Watir::Hanami::Middleware do
+describe Watir::Rack::Middleware do
   let(:app) { double("app") }
   let(:middleware) { described_class.new app }
 
