@@ -2,8 +2,8 @@
 require File.expand_path('../lib/watir/version', __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.authors       = ["Jarmo Pertman"]
-  gem.email         = ["jarmo.p@gmail.com"]
+  gem.authors       = ["Marcelo Jacobus"]
+  gem.email         = ["marcelo.jacobus@gmail.com"]
   gem.description   = %q{Use Watir (http://github.com/watir/watir) in Rack.}
   gem.summary       = %q{Use Watir (http://github.com/watir/watir) in Rack.}
   gem.homepage      = "http://github.com/mjacobus/watir-rack"
