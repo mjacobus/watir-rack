@@ -1,9 +1,9 @@
-# Watir::Hanami
-[![Gem Version](https://badge.fury.io/rb/watir-hanami.png)](http://badge.fury.io/rb/watir-hanami)
-[![Build Status](https://api.travis-ci.org/mjacobus/watir-hanami.png)](http://travis-ci.org/mjacobus/watir-hanami)
-[![Coverage](https://coveralls.io/repos/mjacobus/watir-hanami/badge.png?branch=master)](https://coveralls.io/r/mjacobus/watir-hanami)
+# Watir::Rack
+[![Gem Version](https://badge.fury.io/rb/watir-rack.png)](http://badge.fury.io/rb/watir-rack)
+[![Build Status](https://api.travis-ci.org/mjacobus/watir-rack.png)](http://travis-ci.org/mjacobus/watir-rack)
+[![Coverage](https://coveralls.io/repos/mjacobus/watir-rack/badge.png?branch=master)](https://coveralls.io/r/mjacobus/watir-rack)
 
-This gem makes [Watir](https://github.com/watir/watir) work with Hanami.
+This gem makes [Watir](https://github.com/watir/watir) work with any Rack App.
 
 ## Installation
 
@@ -11,7 +11,7 @@ Add this code to your Gemfile:
 
 ```ruby
 group :test do
-  gem "watir-hanami"
+  gem "watir-rack"
 end
 ```
 
@@ -20,6 +20,8 @@ end
 Just use Watir like you've always done in your requests/integration tests:
 
 ```ruby
+Watir::Rack.app = Hanami.app
+
 browser = Watir::Browser.new
 browser.goto home_path
 browser.text_field(name: "first").set "Jarmo"
@@ -41,4 +43,4 @@ browser.button(name: "sign_in").click
 
 ## License
 
-See [LICENSE](https://github.com/mjacobus/watir-hanami/blob/master/LICENSE).
+See [LICENSE](https://github.com/mjacobus/watir-rack/blob/master/LICENSE).

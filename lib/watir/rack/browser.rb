@@ -1,13 +1,13 @@
 module Watir
-  # Reopened Watir::Browser class for working with Hanami
+  # Reopened Watir::Browser class for working with Rack
   class Browser
     # @private
     alias_method :_original_initialize, :initialize
 
-    # Will start Hanami instance for Watir automatically and then invoke the
+    # Will start Rack instance for Watir automatically and then invoke the
     # original Watir::Browser#initialize method.
     def initialize(*args)
-      Hanami.boot
+      Rack.boot
       _original_initialize *args
     end
 
@@ -15,7 +15,7 @@ module Watir
     alias_method :_original_goto, :goto
 
     # Opens the url with the browser instance.
-    # Will add {Hanami.host} and {Hanami.port} to the url when path is specified.
+    # Will add {Rack.host} and {Rack.port} to the url when path is specified.
     #
     # @example Go to the regular url:
     #   browser.goto "http://google.com"
@@ -25,7 +25,7 @@ module Watir
     #
     # @param [String] url URL to be navigated to.
     def goto(url)
-      url = "http://#{Hanami.host}:#{Hanami.port}#{url}" unless url =~ %r{^(about|data|https?):}i
+      url = "http://#{Rack.host}:#{Rack.port}#{url}" unless url =~ %r{^(about|data|https?):}i
       _original_goto url
     end
   end

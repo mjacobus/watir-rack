@@ -1,5 +1,5 @@
 module Watir
-  class Hanami
+  class Rack
     # @private
     class Middleware
       class PendingRequestsCounter
