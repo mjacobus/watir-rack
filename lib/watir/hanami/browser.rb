@@ -1,22 +1,21 @@
 module Watir
-  # Reopened Watir::Browser class for working with Rails
+  # Reopened Watir::Browser class for working with Hanami
   class Browser
     # @private
     alias_method :_original_initialize, :initialize
 
-    # Will start Rails instance for Watir automatically and then invoke the
+    # Will start Hanami instance for Watir automatically and then invoke the
     # original Watir::Browser#initialize method.
     def initialize(*args)
-      Rails.boot
+      Hanami.boot
       _original_initialize *args
-      add_exception_hook unless Rails.ignore_exceptions?
     end
 
     # @private
     alias_method :_original_goto, :goto
 
     # Opens the url with the browser instance.
-    # Will add {Rails.host} and {Rails.port} to the url when path is specified.
+    # Will add {Hanami.host} and {Hanami.port} to the url when path is specified.
     #
     # @example Go to the regular url:
     #   browser.goto "http://google.com"
@@ -26,19 +25,8 @@ module Watir
     #
     # @param [String] url URL to be navigated to.
     def goto(url)
-      url = "http://#{Rails.host}:#{Rails.port}#{url}" unless url =~ %r{^(about|data|https?):}i
+      url = "http://#{Hanami.host}:#{Hanami.port}#{url}" unless url =~ %r{^(about|data|https?):}i
       _original_goto url
-    end
-
-    private
-
-    def add_exception_hook
-      after_hooks.add do
-        if error = Rails.error
-          Rails.error = nil
-          raise error
-        end
-      end
     end
   end
 end
